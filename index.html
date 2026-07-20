@@ -32,35 +32,56 @@
     <!-- Login View -->
     <div id="view-login" class="flex-1 flex w-full h-screen relative bg-gray-50 overflow-hidden">
         
-        <!-- Left Side: Thematic Background (Hidden on small screens) -->
-        <div class="hidden lg:flex lg:w-[55%] bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
-            <!-- Deep Red Gradient Overlay -->
-            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/95 via-primary-900/90 to-primary-950/95 mix-blend-multiply"></div>
+        <!-- Left Side: Dynamic Thematic Area (Hidden on small screens) -->
+        <div class="hidden lg:flex lg:w-[55%] relative overflow-hidden bg-gray-900">
             
-            <!-- Thematic Floating Elements -->
-            <div class="relative z-10 flex flex-col justify-center px-12 xl:px-20 text-white w-full h-full">
-                <!-- Theme Badges -->
-                <div class="mb-10 flex flex-wrap gap-5">
-                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-white/20 w-36 transform transition-transform hover:-translate-y-1 hover:bg-white/15 cursor-default">
-                        <i class="fa-solid fa-users text-4xl mb-3 text-primary-300"></i>
-                        <span class="text-xs font-bold tracking-widest uppercase text-gray-100">Community</span>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-primary-500/40 w-36 transform transition-transform hover:-translate-y-1 shadow-[0_0_20px_rgba(239,68,68,0.2)] bg-primary-900/20 cursor-default">
-                        <i class="fa-solid fa-award text-4xl mb-3 text-primary-400"></i>
-                        <span class="text-xs font-bold tracking-widest uppercase text-white">Talent</span>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-white/20 w-36 transform transition-transform hover:-translate-y-1 hover:bg-white/15 cursor-default">
-                        <i class="fa-solid fa-compass text-4xl mb-3 text-primary-300"></i>
-                        <span class="text-xs font-bold tracking-widest uppercase text-gray-100">Journey</span>
-                    </div>
-                </div>
+            <!-- Backgrounds for Crossfading -->
+            <!-- We use 3 separate absolute divs to achieve a premium crossfade transition between images -->
+            <div id="bg-community" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out opacity-100 scale-105" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+            <div id="bg-talent" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out opacity-0 scale-100" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+            <div id="bg-journey" class="absolute inset-0 bg-cover bg-center transition-all duration-1000 ease-in-out opacity-0 scale-100" style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+            
+            <!-- Persistent Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/95 via-primary-900/80 to-black/90 mix-blend-multiply"></div>
+            
+            <!-- Content Container -->
+            <div class="relative z-10 flex flex-col justify-between w-full h-full p-12 xl:p-20">
                 
-                <h1 class="text-5xl xl:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
-                    Your HR journey <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200">reimagined.</span>
-                </h1>
-                <p class="text-xl text-gray-300 max-w-xl font-light leading-relaxed">
-                    Foster a thriving community, empower your top talent, and guide every step of the employee journey.
-                </p>
+                <!-- Top: Header -->
+                <div>
+                    <h1 class="text-4xl xl:text-5xl font-extrabold mb-2 leading-tight tracking-tight text-white">
+                        Your HR journey <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200">reimagined.</span>
+                    </h1>
+                </div>
+
+                <!-- Middle: Thematic Statement (Dynamic) -->
+                <div id="theme-text-container" class="flex-1 flex flex-col justify-center transition-all duration-500 ease-in-out transform translate-y-0 opacity-100">
+                    <div class="flex items-center mb-6">
+                        <div class="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center mr-6 shadow-lg">
+                            <i id="theme-icon" class="fa-solid fa-users text-3xl text-primary-300"></i>
+                        </div>
+                        <h2 id="theme-title" class="text-5xl xl:text-6xl font-black text-white tracking-wide uppercase drop-shadow-lg">Community</h2>
+                    </div>
+                    <p id="theme-statement" class="text-2xl xl:text-3xl text-gray-200 font-light leading-snug max-w-2xl drop-shadow-md">
+                        Foster a thriving, inclusive workplace culture where every team member is heard, valued, and belongs.
+                    </p>
+                </div>
+
+                <!-- Bottom: Interactive Navigation -->
+                <div class="flex gap-4 xl:gap-6 mt-auto border-t border-white/20 pt-8">
+                    <button onclick="window.setLoginTheme('community', true)" id="tab-community" class="flex-1 text-left pb-4 border-b-2 border-primary-500 opacity-100 transition-all duration-300 group focus:outline-none">
+                        <span class="block text-xs font-bold tracking-widest uppercase mb-1 text-primary-400 group-hover:text-primary-300 transition-colors">01</span>
+                        <span class="block text-lg font-semibold text-white transition-colors">Community</span>
+                    </button>
+                    <button onclick="window.setLoginTheme('talent', true)" id="tab-talent" class="flex-1 text-left pb-4 border-b-2 border-transparent opacity-50 hover:opacity-100 transition-all duration-300 group focus:outline-none">
+                        <span class="block text-xs font-bold tracking-widest uppercase mb-1 text-gray-400 group-hover:text-gray-300 transition-colors">02</span>
+                        <span class="block text-lg font-semibold text-white transition-colors">Talent</span>
+                    </button>
+                    <button onclick="window.setLoginTheme('journey', true)" id="tab-journey" class="flex-1 text-left pb-4 border-b-2 border-transparent opacity-50 hover:opacity-100 transition-all duration-300 group focus:outline-none">
+                        <span class="block text-xs font-bold tracking-widest uppercase mb-1 text-gray-400 group-hover:text-gray-300 transition-colors">03</span>
+                        <span class="block text-lg font-semibold text-white transition-colors">Journey</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -407,6 +428,90 @@
         } catch (e) { 
             isCanvasSandbox = true; 
         }
+
+        // --- NEW: Dynamic Login Theme Switching Logic ---
+        let currentThemeIndex = 0;
+        const themeKeys = ['community', 'talent', 'journey'];
+        const themeData = {
+            community: {
+                title: 'Community', icon: 'fa-users',
+                statement: 'Foster a thriving, inclusive workplace culture where every team member is heard, valued, and belongs.'
+            },
+            talent: {
+                title: 'Talent', icon: 'fa-award',
+                statement: 'Empower your top performers to grow, lead, and achieve excellence through targeted skill development.'
+            },
+            journey: {
+                title: 'Journey', icon: 'fa-compass',
+                statement: 'Seamlessly guide employees through every career milestone, from successful onboarding to a lasting legacy.'
+            }
+        };
+
+        window.setLoginTheme = (theme, manual = false) => {
+            // Stop auto-rotation if user clicks a tab manually
+            if (manual) clearInterval(window.themeInterval);
+            
+            // 1. Handle Background Crossfading & Zoom
+            themeKeys.forEach(t => {
+                const bgEl = document.getElementById(`bg-${t}`);
+                if (bgEl) {
+                    if (t === theme) {
+                        bgEl.classList.remove('opacity-0', 'scale-100');
+                        bgEl.classList.add('opacity-100', 'scale-105');
+                    } else {
+                        bgEl.classList.remove('opacity-100', 'scale-105');
+                        bgEl.classList.add('opacity-0', 'scale-100');
+                    }
+                }
+                
+                // 2. Handle Navigation Tab Styling
+                const tabEl = document.getElementById(`tab-${t}`);
+                if (tabEl) {
+                    const numSpan = tabEl.querySelector('span:first-child');
+                    if (t === theme) {
+                        tabEl.classList.remove('border-transparent', 'opacity-50');
+                        tabEl.classList.add('border-primary-500', 'opacity-100');
+                        numSpan.classList.remove('text-gray-400');
+                        numSpan.classList.add('text-primary-400');
+                    } else {
+                        tabEl.classList.add('border-transparent', 'opacity-50');
+                        tabEl.classList.remove('border-primary-500', 'opacity-100');
+                        numSpan.classList.add('text-gray-400');
+                        numSpan.classList.remove('text-primary-400');
+                    }
+                }
+            });
+
+            // 3. Handle Text Content Animation (Fade out, update, Fade in)
+            const textContainer = document.getElementById('theme-text-container');
+            if (textContainer) {
+                // Slide down and fade out
+                textContainer.classList.remove('opacity-100', 'translate-y-0');
+                textContainer.classList.add('opacity-0', 'translate-y-4');
+                
+                // Wait for fade-out to complete before swapping text
+                setTimeout(() => {
+                    const tTitle = document.getElementById('theme-title');
+                    const tIcon = document.getElementById('theme-icon');
+                    const tStatement = document.getElementById('theme-statement');
+                    
+                    if (tTitle) tTitle.textContent = themeData[theme].title;
+                    if (tIcon) tIcon.className = `fa-solid ${themeData[theme].icon} text-3xl text-primary-300`;
+                    if (tStatement) tStatement.textContent = themeData[theme].statement;
+                    
+                    // Slide up and fade in
+                    textContainer.classList.remove('opacity-0', 'translate-y-4');
+                    textContainer.classList.add('opacity-100', 'translate-y-0');
+                }, 400); // 400ms delay matches the Tailwind transition duration
+            }
+        };
+
+        // Start Auto-rotation (cycles every 6 seconds)
+        window.themeInterval = setInterval(() => {
+            currentThemeIndex = (currentThemeIndex + 1) % 3;
+            window.setLoginTheme(themeKeys[currentThemeIndex]);
+        }, 6000);
+        // --- END: Login Theme Switching Logic ---
 
         // Hide Dev Mock Login if deployed outside of Canvas
         if (!isCanvasSandbox && mockLoginSection) {
