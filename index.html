@@ -3,320 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HRIS Portal</title>
+    <title>HR-OMA | Human Resource – Organization Management App</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                        }
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: { 50: '#fef2f2', 100: '#fee2e2', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d' } }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Gray-100 */
-        }
-        
-        /* Loading spinner animation */
-        .loader {
-            border-top-color: #0ea5e9;
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
-        }
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Hide elements by default until state is determined */
-        #dashboard-view, #login-view, #loading-view {
-            display: none;
-        }
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col overflow-hidden">
+<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden flex flex-col">
 
-    <div id="loading-view" class="flex-1 flex flex-col items-center justify-center bg-gray-50 z-50 fixed inset-0">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-4"></div>
-        <h2 class="text-center text-gray-600 text-xl font-semibold">Loading HRIS Portal...</h2>
-        <p class="text-gray-500 mt-2">Checking authentication status</p>
-    </div>
-
-    <div id="login-view" class="flex-1 flex items-center justify-center bg-gray-50 min-h-screen">
-        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-lg border border-gray-100">
-            <div class="text-center">
-                <div class="mx-auto h-16 w-16 bg-primary-100 rounded-full flex items-center justify-center mb-4">
-                    <i class="fa-solid fa-users text-primary-600 text-3xl"></i>
-                </div>
-                <h2 class="mt-2 text-3xl font-bold text-gray-900">
-                    HRIS Portal
-                </h2>
-                <p class="mt-2 text-sm text-gray-600">
-                    Sign in to access the Human Resource Information System
-                </p>
-            </div>
+    <!-- Login View -->
+    <div id="view-login" class="flex-1 flex w-full h-screen relative bg-gray-50 overflow-hidden">
+        
+        <!-- Left Side: Thematic Background (Hidden on small screens) -->
+        <div class="hidden lg:flex lg:w-[55%] bg-cover bg-center relative" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+            <!-- Deep Red Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/95 via-primary-900/90 to-primary-950/95 mix-blend-multiply"></div>
             
-            <div class="mt-8 space-y-6">
-                <!-- Custom Error Message Container -->
-                <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline" id="login-error-text"></span>
-                </div>
-
-                <div>
-                    <button id="google-login-btn" class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
-                        <img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo">
-                        Sign in with Google
-                    </button>
+            <!-- Thematic Floating Elements -->
+            <div class="relative z-10 flex flex-col justify-center px-12 xl:px-20 text-white w-full h-full">
+                <!-- Theme Badges -->
+                <div class="mb-10 flex flex-wrap gap-5">
+                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-white/20 w-36 transform transition-transform hover:-translate-y-1 hover:bg-white/15 cursor-default">
+                        <i class="fa-solid fa-users text-4xl mb-3 text-primary-300"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase text-gray-100">Community</span>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-primary-500/40 w-36 transform transition-transform hover:-translate-y-1 shadow-[0_0_20px_rgba(239,68,68,0.2)] bg-primary-900/20 cursor-default">
+                        <i class="fa-solid fa-award text-4xl mb-3 text-primary-400"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase text-white">Talent</span>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl flex flex-col items-center justify-center text-center border border-white/20 w-36 transform transition-transform hover:-translate-y-1 hover:bg-white/15 cursor-default">
+                        <i class="fa-solid fa-compass text-4xl mb-3 text-primary-300"></i>
+                        <span class="text-xs font-bold tracking-widest uppercase text-gray-100">Journey</span>
+                    </div>
                 </div>
                 
-                <!-- Mock Login for Canvas Preview -->
-                <div class="mt-4 pt-4 border-t border-gray-200">
-                    <button id="mock-login-btn" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm bg-primary-600 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
-                        <i class="fa-solid fa-code mr-2"></i>
-                        Dev Mock Login (@inventi.ph)
-                    </button>
-                    <p class="text-xs text-center text-gray-500 mt-2">Use this to preview the dashboard inside Canvas.</p>
+                <h1 class="text-5xl xl:text-6xl font-extrabold mb-6 leading-tight tracking-tight text-white">
+                    Your HR journey <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-200">reimagined.</span>
+                </h1>
+                <p class="text-xl text-gray-300 max-w-xl font-light leading-relaxed">
+                    Foster a thriving community, empower your top talent, and guide every step of the employee journey.
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="w-full lg:w-[45%] flex flex-col items-center justify-center p-8 sm:p-12 relative overflow-y-auto z-10 bg-gradient-to-b from-white to-gray-50 shadow-[-20px_0_40px_rgba(0,0,0,0.1)]">
+            
+            <!-- Mobile Only Theme Header (Visible only when left side is hidden) -->
+            <div class="lg:hidden w-full max-w-md mb-8 text-center flex flex-col items-center">
+                <div class="flex gap-4 mb-4">
+                    <div class="h-12 w-12 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center text-primary-600 shadow-sm"><i class="fa-solid fa-users text-lg"></i></div>
+                    <div class="h-12 w-12 rounded-2xl bg-primary-100 border border-primary-200 flex items-center justify-center text-primary-700 shadow-sm"><i class="fa-solid fa-award text-lg"></i></div>
+                    <div class="h-12 w-12 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center text-primary-600 shadow-sm"><i class="fa-solid fa-compass text-lg"></i></div>
+                </div>
+                <p class="text-xs font-bold text-gray-400 tracking-[0.2em] uppercase">Community • Talent • Journey</p>
+            </div>
+
+            <!-- Login Box -->
+            <div class="bg-white p-8 sm:p-10 rounded-[2rem] shadow-xl border border-gray-100 w-full max-w-md text-center relative z-20">
+                <div class="flex justify-center mb-6">
+                    <div class="bg-gradient-to-br from-primary-600 to-primary-700 text-white p-4 rounded-2xl shadow-lg shadow-primary-600/30 transform rotate-3">
+                        <i class="fa-solid fa-users-viewfinder text-4xl transform -rotate-3"></i>
+                    </div>
+                </div>
+                
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">HR-OMA</h2>
+                <p class="text-gray-500 mb-8 font-medium">Human Resource – Organization Management App</p>
+                
+                <div id="login-error-msg" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-lg text-left shadow-sm font-medium">
+                    <!-- Error messages will appear here -->
                 </div>
 
-                <!-- Divider for potential future email login -->
-                <div class="relative mt-6 hidden">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">
-                            Enterprise Access Only
-                        </span>
-                    </div>
+                <button id="btn-login-google" class="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 text-gray-700 font-semibold py-3.5 px-4 rounded-xl transition-all duration-200 shadow-sm mb-4">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" class="w-5 h-5">
+                    Sign in with Google
+                </button>
+
+                <div class="relative flex items-center py-4 mb-4">
+                    <div class="flex-grow border-t border-gray-200"></div>
+                    <span class="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold tracking-wider uppercase">or access preview</span>
+                    <div class="flex-grow border-t border-gray-200"></div>
                 </div>
+
+                <button id="btn-mock-login" class="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white font-semibold py-3.5 px-4 rounded-xl transition-all shadow-md hover:-translate-y-0.5">
+                    <i class="fa-solid fa-flask text-primary-400"></i>
+                    Dev Mock Login
+                </button>
+                <p class="mt-6 text-xs text-gray-400 font-medium">Authorized personnel only. (Must use @inventi.ph)</p>
             </div>
+            
+            <p class="absolute bottom-6 text-xs text-gray-400 font-medium text-center px-4">
+                &copy; 2026 Human Resource – Organization Management App.
+            </p>
         </div>
     </div>
 
-    <div id="dashboard-view" class="flex-1 flex h-screen overflow-hidden bg-gray-100">
+    <!-- Main Application View (Hidden by default) -->
+    <div id="view-app" class="hidden h-screen w-full flex overflow-hidden">
         
         <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col shadow-sm">
-            <div class="h-16 flex items-center px-6 border-b border-gray-200 bg-primary-600">
-                <i class="fa-solid fa-users text-white text-xl mr-3"></i>
-                <span class="text-white text-lg font-bold tracking-wider">NexaHR</span>
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0 shadow-sm z-10">
+            <div class="min-h-[4rem] py-3 flex items-center px-4 border-b border-gray-100 bg-primary-600 text-white" title="Human Resource – Organization Management App">
+                <i class="fa-solid fa-users-viewfinder text-xl mr-3 text-primary-100 flex-shrink-0"></i>
+                <span class="font-bold text-lg tracking-wider">HR-OMA</span>
             </div>
             
-            <div class="overflow-y-auto flex-1 py-4">
-                <nav class="space-y-1 px-3">
-                    <a href="#" id="nav-overview" class="nav-item bg-primary-50 text-primary-700 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md">
-                        <i class="fa-solid fa-chart-pie text-primary-500 mr-3 text-lg w-5 text-center"></i>
-                        Dashboard
-                    </a>
-                    
-                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">Organization</h3>
-                    
-                    <a href="#" id="nav-directory" class="nav-item text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
-                        <i class="fa-solid fa-address-book text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
-                        Directory
-                    </a>
-                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
-                        <i class="fa-solid fa-sitemap text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
-                        Org Chart
-                    </a>
-                    
-                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">My HR</h3>
-                    
-                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
-                        <i class="fa-solid fa-calendar-check text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
-                        Leave / Time Off
-                    </a>
-                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
-                        <i class="fa-solid fa-money-check-dollar text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
-                        Payroll & Payslips
-                    </a>
-                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
-                        <i class="fa-solid fa-bullseye text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
-                        Performance
-                    </a>
-                </nav>
-            </div>
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-2">Organization</p>
+                <a href="#" id="nav-dashboard" class="flex items-center px-3 py-2.5 bg-primary-50 text-primary-600 border-r-4 border-primary-600 rounded-l-lg font-medium transition-colors">
+                    <i class="fa-solid fa-chart-pie w-6 text-center mr-2"></i> Dashboard
+                </a>
+                <a href="#" id="nav-directory" class="flex items-center px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg font-medium transition-colors">
+                    <i class="fa-solid fa-address-book w-6 text-center mr-2"></i> Directory
+                </a>
+                
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-6">My HR</p>
+                <a href="#" class="flex items-center px-3 py-2.5 text-gray-400 cursor-not-allowed rounded-lg font-medium">
+                    <i class="fa-solid fa-calendar-day w-6 text-center mr-2"></i> Time Off <span class="ml-auto text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">Soon</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2.5 text-gray-400 cursor-not-allowed rounded-lg font-medium">
+                    <i class="fa-solid fa-money-check-dollar w-6 text-center mr-2"></i> Payroll <span class="ml-auto text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">Soon</span>
+                </a>
+            </nav>
             
-            <!-- User Profile Snippet in Sidebar -->
-            <div class="border-t border-gray-200 p-4 bg-gray-50">
-                <div class="flex items-center w-full">
-                    <img id="sidebar-user-photo" class="h-9 w-9 rounded-full object-cover border border-gray-300" src="https://placehold.co/100x100/e2e8f0/475569?text=U" alt="User avatar">
-                    <div class="ml-3 truncate flex-1">
-                        <p id="sidebar-user-name" class="text-sm font-medium text-gray-700 truncate">Loading...</p>
-                        <p class="text-xs text-gray-500">Employee</p>
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex items-center mb-4 px-2">
+                    <div class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm">
+                        <span id="welcome-name-initials">U</span>
+                    </div>
+                    <div class="ml-3 overflow-hidden">
+                        <p id="profile-name" class="text-sm font-medium text-gray-700 truncate">user@inventi.ph</p>
                     </div>
                 </div>
+                <button id="btn-logout" class="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                </button>
             </div>
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <main class="flex-1 flex flex-col bg-gray-50 h-screen overflow-hidden relative">
+            
             <!-- Top Header -->
-            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm z-10">
-                <div class="flex items-center">
-                    <button class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none mr-4">
-                        <i class="fa-solid fa-bars text-xl"></i>
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 flex-shrink-0 shadow-sm z-0">
+                <h2 id="page-title" class="text-xl font-semibold text-gray-800">Overview</h2>
+                <div class="flex items-center gap-4 text-gray-500">
+                    <span id="current-date" class="text-sm font-medium">Loading Date...</span>
+                    <button class="relative p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                     </button>
-                    <h1 id="header-title" class="text-xl font-semibold text-gray-800">Overview</h1>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <button class="text-gray-400 hover:text-gray-500 relative p-1">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span>
-                    </button>
-                    
-                    <!-- Profile Dropdown Trigger -->
-                    <div class="relative flex items-center">
-                        <span id="header-user-email" class="hidden sm:block text-sm text-gray-600 mr-3">loading@example.com</span>
-                        <button id="logout-btn" class="ml-2 bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center">
-                            <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Sign Out
-                        </button>
-                    </div>
                 </div>
             </header>
 
-            <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
+            <!-- Scrollable Content Container -->
+            <div class="flex-1 overflow-y-auto p-8" id="main-scroll-area">
                 
-                <!-- OVERVIEW VIEW -->
-                <div id="view-overview" class="block">
-                    <!-- Welcome Banner -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 flex items-center justify-between">
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-800">Welcome back, <span id="welcome-name" class="text-primary-600">Employee</span>!</h2>
-                            <p class="text-gray-500 mt-1">Here is a quick summary of your HR dashboard.</p>
+                <!-- View: Dashboard Overview -->
+                <div id="view-overview" class="block max-w-6xl mx-auto">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900">Welcome back, <span id="welcome-name">User</span>! 👋</h3>
+                        <p class="text-gray-500 mt-1">Here is what's happening at Inventi today.</p>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-xl mr-4">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Total Employees</p>
+                                <p id="stat-total-emp" class="text-2xl font-bold text-gray-900">--</p>
+                            </div>
                         </div>
-                        <div class="hidden sm:block">
-                            <div class="text-right">
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Today's Date</p>
-                                <p id="current-date" class="text-lg font-medium text-gray-800"></p>
+                        
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-green-50 flex items-center justify-center text-green-600 text-xl mr-4">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Active</p>
+                                <p id="stat-active-emp" class="text-2xl font-bold text-gray-900">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-yellow-50 flex items-center justify-center text-yellow-600 text-xl mr-4">
+                                <i class="fa-solid fa-mug-hot"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">On Leave Today</p>
+                                <p id="stat-on-leave" class="text-2xl font-bold text-gray-900">--</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center">
+                            <div class="h-12 w-12 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 text-xl mr-4">
+                                <i class="fa-solid fa-user-plus"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">New Hires (30d)</p>
+                                <p id="stat-new-hires" class="text-2xl font-bold text-gray-900">--</p>
                             </div>
                         </div>
                     </div>
 
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-                    <!-- Stat Card 1 -->
-                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
-                                    <i class="fa-solid fa-clock text-blue-600 text-xl w-6 text-center"></i>
+                    <!-- Placeholder Widgets -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Recent Announcements</h4>
+                            <div class="space-y-4">
+                                <div class="flex gap-4">
+                                    <div class="w-2 h-2 mt-2 rounded-full bg-primary-500 flex-shrink-0"></div>
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-sm">Townhall Meeting scheduled for Friday</p>
+                                        <p class="text-xs text-gray-500">Posted by HR • 2 hours ago</p>
+                                    </div>
                                 </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Time Logged This Week</dt>
-                                        <dd id="stat-time" class="text-lg font-semibold text-gray-900">--</dd>
-                                    </dl>
+                                <div class="flex gap-4">
+                                    <div class="w-2 h-2 mt-2 rounded-full bg-primary-500 flex-shrink-0"></div>
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-sm">Updated Health Protocol Guidelines</p>
+                                        <p class="text-xs text-gray-500">Posted by Admin • Yesterday</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
-                            <div class="text-sm">
-                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">View timesheet</a>
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex items-center justify-center text-center">
+                             <div>
+                                <i class="fa-regular fa-chart-bar text-4xl text-gray-300 mb-3"></i>
+                                <h4 class="text-lg font-semibold text-gray-600 mb-1">Attendance Chart</h4>
+                                <p class="text-sm text-gray-400">Data visualization coming soon.</p>
                             </div>
                         </div>
                     </div>
+                </div> <!-- End Overview View -->
 
-                    <!-- Stat Card 2 -->
-                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
-                                    <i class="fa-solid fa-calendar-day text-green-600 text-xl w-6 text-center"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Leave Balance</dt>
-                                        <dd id="stat-leave" class="text-lg font-semibold text-gray-900">--</dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
-                            <div class="text-sm">
-                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">Request time off</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Stat Card 3 -->
-                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
-                                    <i class="fa-solid fa-bullhorn text-yellow-600 text-xl w-6 text-center"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Pending Tasks</dt>
-                                        <dd id="stat-tasks" class="text-lg font-semibold text-gray-900">--</dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
-                            <div class="text-sm">
-                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">View tasks</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Stat Card 4 -->
-                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
-                                    <i class="fa-solid fa-award text-purple-600 text-xl w-6 text-center"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Next Review</dt>
-                                        <dd id="stat-review" class="text-lg font-semibold text-gray-900">--</dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
-                            <div class="text-sm">
-                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">Performance goals</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                <!-- END OVERVIEW VIEW -->
-
-                <!-- DIRECTORY VIEW -->
-                <div id="view-directory" class="hidden space-y-6">
-                    <!-- Directory Header Controls -->
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <!-- View: Employee Directory -->
+                <div id="view-directory" class="hidden max-w-7xl mx-auto">
+                    <!-- Directory Toolbar -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                         <div class="relative w-full sm:w-96">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fa-solid fa-search text-gray-400"></i>
+                                <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
                             </div>
-                            <input type="text" id="directory-search" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="Search employees by name or position...">
+                            <input type="text" id="directory-search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm shadow-sm transition-shadow" placeholder="Search employees by name, email, or role...">
                         </div>
+                        
                         <div class="flex gap-2 w-full sm:w-auto">
-                            <select id="directory-filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md border">
+                            <select id="directory-filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-lg border shadow-sm">
                                 <option value="all">All Departments</option>
                                 <option value="Engineering">Engineering</option>
                                 <option value="Product">Product</option>
@@ -326,406 +280,351 @@
                                 <option value="Finance">Finance</option>
                                 <option value="Operations">Operations</option>
                             </select>
+                            <button id="btn-add-employee" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors flex items-center whitespace-nowrap shadow-sm">
+                                <i class="fa-solid fa-user-plus mr-2"></i> Add Employee
+                            </button>
                         </div>
                     </div>
 
                     <!-- Directory Table -->
-                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position & Department</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Info</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role & Dept</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="directory-table-body" class="bg-white divide-y divide-gray-200">
-                                    <!-- Content populated by JavaScript -->
+                                    <!-- Table rows injected via JS -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-                <!-- END DIRECTORY VIEW -->
+                </div> <!-- End Directory View -->
                 
-                <!-- Footer -->
+                <!-- Footer inside main content -->
                 <footer class="mt-8 border-t border-gray-200 pt-6 pb-2 text-center text-sm text-gray-500">
-                    <p>&copy; 2026 NexaHR Systems. All rights reserved.</p>
+                    <p>&copy; 2026 HR-OMA (Human Resource – Organization Management App). All rights reserved.</p>
                 </footer>
             </div>
         </main>
     </div>
 
+    <!-- Employee Form Modal -->
+    <div id="employee-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg mx-4 border border-gray-100">
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+                <h3 id="emp-modal-title" class="text-xl font-bold text-gray-800">Add New Employee</h3>
+                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-600 focus:outline-none p-1 rounded hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="employee-form" class="space-y-4">
+                <div>
+                    <label for="emp-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="emp-name" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-shadow">
+                </div>
+                <div>
+                    <label for="emp-email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="emp-email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-shadow">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="emp-position" class="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                        <input type="text" id="emp-position" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-shadow">
+                    </div>
+                    <div>
+                        <label for="emp-department" class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                        <select id="emp-department" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-shadow">
+                            <option value="Engineering">Engineering</option>
+                            <option value="Product">Product</option>
+                            <option value="Human Resources">Human Resources</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Sales">Sales</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Operations">Operations</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label for="emp-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="emp-status" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-sm transition-shadow">
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                </div>
+                
+                <div class="mt-8 flex justify-end gap-3 pt-4">
+                    <button type="button" id="btn-cancel-employee" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm font-medium">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithPopup, 
-            GoogleAuthProvider,
-            onAuthStateChanged,
-            signOut,
-            signInWithCustomToken
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let app;
-        let auth;
-        let db;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hris-default-app';
-        
-        try {
-            // Using the explicitly provided Firebase config
-            const firebaseConfig = {
-                apiKey: "AIzaSyBhPf0-e_uhkDBreHw--Z73g_A3fyIHOkQ",
-                authDomain: "hris-2c1f2.firebaseapp.com",
-                projectId: "hris-2c1f2",
-                storageBucket: "hris-2c1f2.firebasestorage.app",
-                messagingSenderId: "504479158885",
-                appId: "1:504479158885:web:ef70d0d5781f28b8102c8c"
-            };
-            
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            // Set language to device default for Auth UI
-            auth.useDeviceLanguage();
-            
-            console.log("Firebase & Firestore initialized successfully");
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
-            showError("System initialization error. Please contact IT support.");
-        }
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBhPf0-e_uhkDBreHw--Z73g_A3fyIHOkQ",
+            authDomain: "hris-2c1f2.firebaseapp.com",
+            projectId: "hris-2c1f2",
+            storageBucket: "hris-2c1f2.firebasestorage.app",
+            messagingSenderId: "504479158885",
+            appId: "1:504479158885:web:ef70d0d5781f28b8102c8c"
+        };
 
-        // DOM Elements
-        const loadingView = document.getElementById('loading-view');
-        const loginView = document.getElementById('login-view');
-        const dashboardView = document.getElementById('dashboard-view');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        // UI Elements
+        const viewLogin = document.getElementById('view-login');
+        const viewApp = document.getElementById('view-app');
+        const loginErrorMsg = document.getElementById('login-error-msg');
+        const btnLoginGoogle = document.getElementById('btn-login-google');
+        const btnMockLogin = document.getElementById('btn-mock-login');
+        const btnLogout = document.getElementById('btn-logout');
         
-        const loginBtn = document.getElementById('google-login-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const errorContainer = document.getElementById('login-error');
-        const errorText = document.getElementById('login-error-text');
-        
-        // User info display elements
-        const headerEmail = document.getElementById('header-user-email');
+        // Dashboard Elements
         const welcomeName = document.getElementById('welcome-name');
-        const sidebarName = document.getElementById('sidebar-user-name');
-        const sidebarPhoto = document.getElementById('sidebar-user-photo');
+        const profileName = document.getElementById('profile-name');
+        const welcomeNameInitials = document.getElementById('welcome-name-initials');
+        const currentDateEl = document.getElementById('current-date');
         
-        // Environment Check for Canvas Sandbox
-        const isSandbox = window.location.origin === "null" || window.location.hostname === "" || window.location.hostname.includes('googleusercontent');
-        
-        if (isSandbox) {
-            console.warn("Running in Canvas Sandbox: Ensure googleusercontent.com is added to Firebase Authorized Domains.");
-            // We removed the code that disables the login button so you can test it now
+        // Set current date in header
+        if(currentDateEl) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            currentDateEl.textContent = new Date().toLocaleDateString('en-US', options);
         }
 
-        // Helper to switch views
-        function showView(viewId) {
-            loadingView.style.display = 'none';
-            loginView.style.display = 'none';
-            dashboardView.style.display = 'none';
-            
-            document.getElementById(viewId).style.display = viewId === 'dashboard-view' ? 'flex' : 'flex';
+        // Mock Data
+        let mockEmployees = [
+            { id: 1, name: 'Juan Dela Cruz', email: 'juan.delacruz@inventi.ph', position: 'Software Engineer', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=JD' },
+            { id: 2, name: 'Maria Santos', email: 'maria.santos@inventi.ph', position: 'Product Manager', department: 'Product', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MS' },
+            { id: 3, name: 'Jose Rizal', email: 'jose.rizal@inventi.ph', position: 'HR Director', department: 'Human Resources', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=JR' },
+            { id: 4, name: 'Andres Bonifacio', email: 'andres.bonifacio@inventi.ph', position: 'Lead Developer', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=AB' },
+            { id: 5, name: 'Gabriela Silang', email: 'gabriela.silang@inventi.ph', position: 'Marketing Head', department: 'Marketing', status: 'On Leave', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=GS' },
+            { id: 6, name: 'Emilio Aguinaldo', email: 'emilio.aguinaldo@inventi.ph', position: 'Sales Director', department: 'Sales', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=EA' },
+            { id: 7, name: 'Apolinario Mabini', email: 'apolinario.mabini@inventi.ph', position: 'Chief Financial Officer', department: 'Finance', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=AM' },
+            { id: 8, name: 'Melchora Aquino', email: 'melchora.aquino@inventi.ph', position: 'Operations Manager', department: 'Operations', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MA' },
+            { id: 9, name: 'Marcelo H. del Pilar', email: 'marcelo.delpilar@inventi.ph', position: 'Senior QA Engineer', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MD' },
+            { id: 10, name: 'Antonio Luna', email: 'antonio.luna@inventi.ph', position: 'Security Analyst', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=AL' },
+            { id: 11, name: 'Juan Luna', email: 'juan.luna@inventi.ph', position: 'UI/UX Designer', department: 'Product', status: 'On Leave', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=JL' },
+            { id: 12, name: 'Teresa Magbanua', email: 'teresa.magbanua@inventi.ph', position: 'Sales Representative', department: 'Sales', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=TM' },
+            { id: 13, name: 'Gregorio del Pilar', email: 'gregorio.delpilar@inventi.ph', position: 'Accountant', department: 'Finance', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=GP' },
+            { id: 14, name: 'Miguel Malvar', email: 'miguel.malvar@inventi.ph', position: 'Facility Staff', department: 'Operations', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MM' },
+            { id: 15, name: 'Macario Sakay', email: 'macario.sakay@inventi.ph', position: 'Support Specialist', department: 'Marketing', status: 'Archived', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MS' },
+            { id: 16, name: 'Lapeña, Reynaldo', email: 'reynaldo.lapena@inventi.ph', position: 'Backend Developer', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=RL' },
+            { id: 17, name: 'Reyes, Carlo', email: 'carlo.reyes@inventi.ph', position: 'Data Analyst', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=CR' },
+            { id: 18, name: 'Mendoza, Anna', email: 'anna.mendoza@inventi.ph', position: 'HR Specialist', department: 'Human Resources', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=AM' },
+            { id: 19, name: 'Garcia, Mark', email: 'mark.garcia@inventi.ph', position: 'DevOps Engineer', department: 'Engineering', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=MG' },
+            { id: 20, name: 'Cruz, Sarah', email: 'sarah.cruz@inventi.ph', position: 'Product Owner', department: 'Product', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=SC' },
+            { id: 21, name: 'Aquino, Paul', email: 'paul.aquino@inventi.ph', position: 'Finance Analyst', department: 'Finance', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=PA' }
+        ];
+
+        // Auth Listeners & Buttons
+        if (btnMockLogin) {
+            btnMockLogin.addEventListener('click', () => {
+                if (viewLogin) viewLogin.classList.add('hidden');
+                if (viewApp) viewApp.classList.remove('hidden');
+                
+                if (welcomeName) welcomeName.textContent = "Dev User";
+                if (profileName) profileName.textContent = "dev.user@inventi.ph";
+                if (welcomeNameInitials) welcomeNameInitials.textContent = "DU";
+                
+                updateDashboardStats();
+                setTimeout(() => renderDirectory(), 100);
+            });
         }
-        
-        function showError(message) {
-            errorText.textContent = message;
-            errorContainer.classList.remove('hidden');
-            // Hide error after 10 seconds to give user time to read
-            setTimeout(() => {
-                errorContainer.classList.add('hidden');
-            }, 10000);
+
+        if (btnLoginGoogle) {
+            btnLoginGoogle.addEventListener('click', () => {
+                if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
+                
+                signInWithPopup(auth, provider).catch((error) => {
+                    // Check for the specific sandbox/unauthorized domain error
+                    if (error.code === 'auth/unauthorized-domain' || error.message.includes('unauthorized-domain')) {
+                        // Use console.warn instead of console.error to prevent the red crash log in the UI
+                        console.warn("Sandbox limitation: Firebase blocks Google Login popups from this environment.");
+                        if (loginErrorMsg) {
+                            loginErrorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i> <strong>Preview Environment Detected:</strong> Firebase restricts real Google Logins from this sandbox. Please use the <strong>Dev Mock Login</strong> button below to view the app!`;
+                            loginErrorMsg.classList.remove('hidden');
+                        }
+                    } else {
+                        // Log actual unexpected errors
+                        console.error("Auth Error:", error);
+                        if (loginErrorMsg) {
+                            loginErrorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i> Authentication failed or was cancelled.`;
+                            loginErrorMsg.classList.remove('hidden');
+                        }
+                    }
+                });
+            });
         }
 
-        // Set current date in dashboard
-        const dateElement = document.getElementById('current-date');
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        dateElement.textContent = new Date().toLocaleDateString('en-US', options);
-
-        // Setup Google Auth Provider
-        const googleProvider = new GoogleAuthProvider();
-        
-        // Handle Login Click
-        loginBtn.addEventListener('click', async (e) => {
-            try {
-                // Visual feedback during login
-                loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Connecting...';
-                loginBtn.disabled = true;
-                errorContainer.classList.add('hidden');
-
-                // Intercept request if inside the restricted preview sandbox to prevent console errors
+        if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+                let isSandbox = false;
+                try { if (window.self !== window.top && window.origin === "null") isSandbox = true; } catch (e) { isSandbox = true; }
+                
                 if (isSandbox) {
-                    await new Promise(resolve => setTimeout(resolve, 400)); // Small delay for visual effect
-                    throw { code: 'auth/unauthorized-domain' };
-                }
-
-                // Initiate popup sign-in
-                const result = await signInWithPopup(auth, googleProvider);
-                
-                // Check if the user's email belongs to the allowed domain
-                const userEmail = result.user.email;
-                if (!userEmail || !userEmail.endsWith('@inventi.ph')) {
-                    // Sign out the user immediately if domain doesn't match
-                    await signOut(auth);
-                    throw new Error(`Access denied. ${userEmail} is not an @inventi.ph email address.`);
-                }
-                
-                // The onAuthStateChanged listener will handle the UI update if successful
-                
-            } catch (error) {
-                // Only log unexpected errors to the console (suppress sandbox errors)
-                if (error.code !== 'auth/unauthorized-domain') {
-                    console.error("Login error:", error);
-                }
-                
-                loginBtn.innerHTML = '<img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo"> Sign in with Google';
-                loginBtn.disabled = false;
-                
-                // Handle specific errors
-                if (error.code === 'auth/popup-closed-by-user') {
-                    showError("Sign-in cancelled. Please try again.");
-                } else if (error.code === 'auth/network-request-failed') {
-                    showError("Network error. Check your connection.");
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    showError("Firebase security blocks real logins inside this preview window. Please use the 'Dev Mock Login' button below.");
+                    // Mock logout
+                    if (viewLogin) viewLogin.classList.remove('hidden');
+                    if (viewApp) viewApp.classList.add('hidden');
+                    if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
                 } else {
-                    showError(error.message || "Authentication failed. Please try again.");
+                    signOut(auth);
                 }
-            }
-        });
+            });
+        }
 
-        // Handle Logout Click
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                // Check if it's a mock session
-                if (window.isMockSession) {
-                    window.isMockSession = false;
-                    showView('login-view');
-                    return;
-                }
+        if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+                // Always reset UI immediately to handle Dev Mock Login sessions properly
+                if (viewLogin) viewLogin.classList.remove('hidden');
+                if (viewApp) viewApp.classList.add('hidden');
+                if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
                 
-                await signOut(auth);
-                // The onAuthStateChanged listener will handle the UI update
-            } catch (error) {
-                console.error("Logout error:", error);
-                showError("Failed to sign out. Please try again.");
-            }
-        });
-
-        // Handle Mock Login Click for Canvas
-        document.getElementById('mock-login-btn').addEventListener('click', () => {
-            window.isMockSession = true;
-            
-            // Set mock UI data
-            headerEmail.textContent = 'juan.delacruz@inventi.ph';
-            welcomeName.textContent = 'Juan';
-            sidebarName.textContent = 'Juan Dela Cruz (Dev)';
-            sidebarPhoto.src = `https://placehold.co/100x100/e2e8f0/475569?text=JC`;
-            
-            // Inject Mock Stats for Dashboard
-            document.getElementById('stat-time').textContent = '38h 45m';
-            document.getElementById('stat-leave').textContent = '12.5 Days';
-            document.getElementById('stat-tasks').textContent = '5';
-            document.getElementById('stat-review').textContent = 'Aug 15, 2026';
-            
-            // Pre-populate the directory data immediately on login
-            if (typeof renderDirectory === 'function') {
-                renderDirectory();
-            }
-            
-            // Switch to dashboard
-            showView('dashboard-view');
-        });
-
-        // Start by showing loading
-        showView('loading-view');
+                // Trigger Firebase sign out (fails gracefully if no active session exists)
+                signOut(auth).catch((error) => console.warn("Sign out:", error));
+            });
+        }
 
         onAuthStateChanged(auth, async (user) => {
-            // Note: We bypass the custom token check because we are using a custom Firebase project
-            // and we want to enforce real Google login.
-            
             if (user) {
-                console.log("User logged in:", user.email);
-                
-                // Sync user profile to Firestore database
-                try {
-                    const userId = user.uid;
-                    // Strict path rule: /artifacts/{appId}/users/{userId}/{collectionName}
-                    const userRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'info');
+                if (user.email && user.email.endsWith('@inventi.ph')) {
+                    // Valid domain, save to Firestore
+                    try {
+                        await setDoc(doc(db, "users", user.uid), {
+                            name: user.displayName,
+                            email: user.email,
+                            lastLogin: serverTimestamp()
+                        }, { merge: true });
+                    } catch (e) {
+                        console.error("Error saving user data:", e);
+                    }
                     
-                    await setDoc(userRef, {
-                        email: user.email,
-                        name: user.displayName || 'Employee',
-                        lastLogin: new Date().toISOString(),
-                        photoURL: user.photoURL || '',
-                        status: 'Active'
-                    }, { merge: true });
+                    if (viewLogin) viewLogin.classList.add('hidden');
+                    if (viewApp) viewApp.classList.remove('hidden');
                     
-                    console.log("User profile synced with Firestore.");
-                } catch (dbError) {
-                    console.error("Failed to sync profile to Firestore:", dbError);
-                }
+                    const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
+                    if (welcomeName) welcomeName.textContent = firstName;
+                    if (profileName) profileName.textContent = user.email;
+                    if (welcomeNameInitials) welcomeNameInitials.textContent = firstName.substring(0,2).toUpperCase();
+                    
+                    updateDashboardStats();
+                    setTimeout(() => renderDirectory(), 500);
 
-                // Update UI with user data
-                headerEmail.textContent = user.email;
-                
-                // Extract first name or use display name
-                const displayName = user.displayName || 'Employee';
-                const firstName = displayName.split(' ')[0];
-                
-                welcomeName.textContent = firstName;
-                sidebarName.textContent = displayName;
-                
-                // Set profile photo with fallback
-                if (user.photoURL) {
-                    sidebarPhoto.src = user.photoURL;
                 } else {
-                    // Generate placeholder with initials
-                    const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    sidebarPhoto.src = `https://placehold.co/100x100/e2e8f0/475569?text=${initials}`;
+                    // Invalid domain, sign out
+                    signOut(auth).then(() => {
+                        if (loginErrorMsg) {
+                            loginErrorMsg.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-2"></i> Access denied. <strong>${user.email}</strong> is not an @inventi.ph address.`;
+                            loginErrorMsg.classList.remove('hidden');
+                        }
+                    });
                 }
-
-                // Smooth transition to dashboard
-                showView('dashboard-view');
-                
-                // Reset login button state in case they log out later
-                loginBtn.innerHTML = '<img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo"> Sign in with Google';
-                loginBtn.disabled = false;
-                
             } else {
-                // Show login screen
-                console.log("User signed out, showing login");
-                showView('login-view');
+                if (viewLogin) viewLogin.classList.remove('hidden');
+                if (viewApp) viewApp.classList.add('hidden');
             }
         });
 
-        // --- DASHBOARD NAVIGATION & VIEWS ---
-        const navOverview = document.getElementById('nav-overview');
+        // Navigation Logic
+        const navDashboard = document.getElementById('nav-dashboard');
         const navDirectory = document.getElementById('nav-directory');
         const viewOverview = document.getElementById('view-overview');
         const viewDirectory = document.getElementById('view-directory');
-        const headerTitle = document.getElementById('header-title');
+        const pageTitle = document.getElementById('page-title');
 
-        // Helper to reset nav styles
-        function resetNavStyles() {
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                // Remove active classes
-                item.classList.remove('bg-primary-50', 'text-primary-700');
-                item.classList.add('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
-                
-                // Reset icon colors
-                const icon = item.querySelector('i');
-                if(icon) {
-                    icon.classList.remove('text-primary-500');
-                    icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
-                }
-            });
-        }
-
-        // Helper to set active nav style
-        function setActiveNav(navElement) {
-            navElement.classList.remove('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
-            navElement.classList.add('bg-primary-50', 'text-primary-700');
-            
-            const icon = navElement.querySelector('i');
-            if(icon) {
-                icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
-                icon.classList.add('text-primary-500');
+        const switchView = (activeNav, inactiveNav, showView, hideView, title) => {
+            if (activeNav) {
+                activeNav.classList.add('bg-primary-50', 'text-primary-600', 'border-r-4', 'border-primary-600');
+                activeNav.classList.remove('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
             }
+            if (inactiveNav) {
+                inactiveNav.classList.remove('bg-primary-50', 'text-primary-600', 'border-r-4', 'border-primary-600');
+                inactiveNav.classList.add('text-gray-600', 'hover:bg-gray-50', 'hover:text-gray-900');
+            }
+            if (showView) showView.classList.replace('hidden', 'block');
+            if (hideView) hideView.classList.replace('block', 'hidden');
+            if (pageTitle) pageTitle.textContent = title;
+            
+            if (showView === viewDirectory) {
+                renderDirectory();
+            } else if (showView === viewOverview) {
+                updateDashboardStats();
+            }
+        };
+
+        if(navDashboard) navDashboard.addEventListener('click', (e) => { e.preventDefault(); switchView(navDashboard, navDirectory, viewOverview, viewDirectory, 'Overview'); });
+        if(navDirectory) navDirectory.addEventListener('click', (e) => { e.preventDefault(); switchView(navDirectory, navDashboard, viewDirectory, viewOverview, 'Employee Directory'); });
+
+        function updateDashboardStats() {
+            const total = mockEmployees.length;
+            const active = mockEmployees.filter(e => e.status === 'Active').length;
+            const onLeave = mockEmployees.filter(e => e.status === 'On Leave').length;
+            // Mocking new hires
+            const newHires = Math.floor(total * 0.15); 
+
+            if(document.getElementById('stat-total-emp')) document.getElementById('stat-total-emp').textContent = total;
+            if(document.getElementById('stat-active-emp')) document.getElementById('stat-active-emp').textContent = active;
+            if(document.getElementById('stat-on-leave')) document.getElementById('stat-on-leave').textContent = onLeave;
+            if(document.getElementById('stat-new-hires')) document.getElementById('stat-new-hires').textContent = newHires;
         }
 
-        // Switch to Overview Tab
-        navOverview.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetNavStyles();
-            setActiveNav(navOverview);
-            
-            viewDirectory.classList.add('hidden');
-            viewOverview.classList.remove('hidden');
-            headerTitle.textContent = 'Overview';
-        });
-
-        // Switch to Directory Tab
-        navDirectory.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetNavStyles();
-            setActiveNav(navDirectory);
-            
-            viewOverview.classList.add('hidden');
-            viewDirectory.classList.remove('hidden');
-            headerTitle.textContent = 'Employee Directory';
-            
-            // Force re-render of directory list to ensure data displays
-            const filterVal = document.getElementById('directory-filter') ? document.getElementById('directory-filter').value : 'all';
-            const searchVal = document.getElementById('directory-search') ? document.getElementById('directory-search').value : '';
-            renderDirectory(filterVal, searchVal);
-        });
-
-        // --- DIRECTORY MOCK DATA & RENDER LOGIC ---
-        const mockEmployees = [
-            { id: 1, name: 'Sarah Miller', position: 'Product Lead', department: 'Product', email: 'smiller@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0f2fe/0369a1?text=SM' },
-            { id: 2, name: 'John Davis', position: 'UX Designer', department: 'Product', email: 'jdavis@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fef08a/854d0e?text=JD' },
-            { id: 3, name: 'Alex Kim', position: 'Frontend Developer', department: 'Engineering', email: 'akim@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/fecdd3/be123c?text=AK' },
-            { id: 4, name: 'Elena Rodriguez', position: 'HR Manager', department: 'Human Resources', email: 'erodriguez@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dcfce3/166534?text=ER' },
-            { id: 5, name: 'Marcus Johnson', position: 'Backend Engineer', department: 'Engineering', email: 'mjohnson@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/f3e8ff/6b21a8?text=MJ' },
-            { id: 6, name: 'Wei Chen', position: 'Marketing Director', department: 'Marketing', email: 'wchen@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/ffedd5/c2410c?text=WC' },
-            { id: 7, name: 'Maria Santos', position: 'QA Engineer', department: 'Engineering', email: 'msantos@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0e7ff/4338ca?text=MS' },
-            { id: 8, name: 'Miguel Reyes', position: 'Data Analyst', department: 'Engineering', email: 'mreyes@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fae8ff/a21caf?text=MR' },
-            { id: 9, name: 'Isabella Garcia', position: 'Recruitment Specialist', department: 'Human Resources', email: 'igarcia@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/cffafe/0e7490?text=IG' },
-            { id: 10, name: 'David Bautista', position: 'Content Strategist', department: 'Marketing', email: 'dbautista@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fefce8/a16207?text=DB' },
-            { id: 11, name: 'Chloe Lim', position: 'Product Manager', department: 'Product', email: 'clim@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fee2e2/b91c1c?text=CL' },
-            { id: 12, name: 'Rafael Cruz', position: 'DevOps Engineer', department: 'Engineering', email: 'rcruz@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dbeafe/1d4ed8?text=RC' },
-            { id: 13, name: 'Juan Dela Cruz', position: 'Software Engineer', department: 'Engineering', email: 'jdelacruz@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=JC' },
-            { id: 14, name: 'Ana Patricia Gonzales', position: 'Financial Controller', department: 'Finance', email: 'agonzales@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fce7f3/be185d?text=AG' },
-            { id: 15, name: 'Mark Villanueva', position: 'Sales Executive', department: 'Sales', email: 'mvillanueva@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/d1fae5/047857?text=MV' },
-            { id: 16, name: 'Grace Torres', position: 'Operations Manager', department: 'Operations', email: 'gtorres@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/fef3c7/b45309?text=GT' },
-            { id: 17, name: 'Kevin Ocampo', position: 'Account Manager', department: 'Sales', email: 'kocampo@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0e7ff/3730a3?text=KO' },
-            { id: 18, name: 'Liza Fernandez', position: 'Payroll Specialist', department: 'Finance', email: 'lfernandez@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fae8ff/86198f?text=LF' },
-            { id: 19, name: 'Paolo Mendoza', position: 'Facilities Coordinator', department: 'Operations', email: 'pmendoza@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dbeafe/1e40af?text=PM' },
-            { id: 20, name: 'Ria Sy', position: 'UI Designer', department: 'Product', email: 'rsy@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fefce8/ca8a04?text=RS' },
-            { id: 21, name: 'Antonio Ramos', position: 'Chief Executive Officer', department: 'Operations', email: 'aramos@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/0f172a?text=AR' }
-        ];
-
+        // Directory Logic
         function renderDirectory(filterDept = 'all', searchQuery = '') {
             const tbody = document.getElementById('directory-table-body');
-            if (!tbody) return; // Safeguard if element is missing
-            
+            if (!tbody) return;
+
             tbody.innerHTML = '';
-            
-            // Filter by department and text search
-            const filtered = mockEmployees.filter(emp => {
-                const matchDept = filterDept === 'all' || emp.department === filterDept;
-                const searchLower = (searchQuery || '').toLowerCase();
-                const matchSearch = emp.name.toLowerCase().includes(searchLower) || 
-                                    emp.position.toLowerCase().includes(searchLower);
-                return matchDept && matchSearch;
-            });
-            
+            let filtered = mockEmployees;
+
+            // Apply Filters
+            if (filterDept !== 'all') {
+                filtered = filtered.filter(emp => emp.department === filterDept);
+            }
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(emp => 
+                    emp.name.toLowerCase().includes(q) || 
+                    emp.email.toLowerCase().includes(q) || 
+                    emp.position.toLowerCase().includes(q)
+                );
+            }
+
             // Empty state
             if(filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No employees found matching your search criteria.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-500 bg-gray-50"><i class="fa-solid fa-magnifying-glass text-gray-300 text-3xl mb-3 block"></i>No employees found matching your search criteria.</td></tr>`;
                 return;
             }
 
-            // Render table rows
+            // Render rows
             filtered.forEach(emp => {
-                const statusHtml = emp.status === 'Active' 
-                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full"></span> Active</span>`
-                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><span class="w-1.5 h-1.5 mr-1.5 bg-yellow-500 rounded-full"></span> ${emp.status}</span>`;
+                let statusHtml = '';
+                if (emp.status === 'Active') {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200"><span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full"></span> Active</span>`;
+                } else if (emp.status === 'Archived') {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"><span class="w-1.5 h-1.5 mr-1.5 bg-gray-500 rounded-full"></span> Archived</span>`;
+                } else {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200"><span class="w-1.5 h-1.5 mr-1.5 bg-yellow-500 rounded-full"></span> ${emp.status}</span>`;
+                }
                 
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50 transition-colors';
+                tr.className = 'hover:bg-primary-50/50 transition-colors duration-150';
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
@@ -733,14 +632,14 @@
                                 <img class="h-10 w-10 rounded-full object-cover border border-gray-200" src="${emp.avatar}" alt="${emp.name}">
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">${emp.name}</div>
-                                <div class="text-xs text-gray-500">EMP-${String(emp.id).padStart(4, '0')}</div>
+                                <div class="text-sm font-semibold text-gray-900">${emp.name}</div>
+                                <div class="text-xs text-gray-500 font-mono mt-0.5">EMP-${String(emp.id).padStart(4, '0')}</div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900">${emp.position}</div>
-                        <div class="text-sm text-gray-500">${emp.department}</div>
+                        <div class="text-sm text-gray-500 mt-0.5">${emp.department}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <a href="mailto:${emp.email}" class="text-sm text-gray-600 hover:text-primary-600 transition-colors flex items-center">
@@ -752,8 +651,11 @@
                         ${statusHtml}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button class="text-gray-400 hover:text-primary-600 transition-colors bg-white rounded-md p-1 border border-transparent hover:border-gray-200 hover:shadow-sm" title="View Details">
-                            <i class="fa-solid fa-chevron-right px-1"></i>
+                        <button onclick="window.editEmployee(${emp.id})" class="text-primary-600 hover:text-primary-800 transition-colors mr-2 p-2 rounded-md hover:bg-primary-50" title="Edit Employee">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="window.archiveEmployee(${emp.id})" class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-md hover:bg-red-50" title="Archive Employee">
+                            <i class="fa-solid fa-box-archive"></i>
                         </button>
                     </td>
                 `;
@@ -761,29 +663,100 @@
             });
         }
         
-        // Setup Search and Filter Event Listeners
-        const dirSearchInput = document.getElementById('directory-search');
-        const dirFilterSelect = document.getElementById('directory-filter');
+        const filterSelect = document.getElementById('directory-filter');
+        const searchInput = document.getElementById('directory-search');
+        if(filterSelect) filterSelect.addEventListener('change', (e) => renderDirectory(e.target.value, searchInput ? searchInput.value : ''));
+        if(searchInput) searchInput.addEventListener('input', (e) => renderDirectory(filterSelect ? filterSelect.value : 'all', e.target.value));
+
+        const empModal = document.getElementById('employee-modal');
+        const empForm = document.getElementById('employee-form');
+        const btnAddEmp = document.getElementById('btn-add-employee');
+        const btnCancelEmp = document.getElementById('btn-cancel-employee');
+        const btnCloseModal = document.getElementById('btn-close-modal');
+        const modalTitle = document.getElementById('emp-modal-title');
         
-        if(dirSearchInput) {
-            dirSearchInput.addEventListener('input', (e) => {
-                const filterVal = dirFilterSelect ? dirFilterSelect.value : 'all';
-                renderDirectory(filterVal, e.target.value);
+        let isEditing = false;
+        let editingId = null;
+
+        const openModal = () => { if (empModal) empModal.classList.remove('hidden'); }
+        const closeModal = () => { if (empModal) empModal.classList.add('hidden'); }
+
+        if (btnAddEmp) {
+            btnAddEmp.addEventListener('click', () => {
+                isEditing = false;
+                editingId = null;
+                modalTitle.textContent = 'Add New Employee';
+                empForm.reset();
+                openModal();
             });
         }
-        if(dirFilterSelect) {
-            dirFilterSelect.addEventListener('change', (e) => {
-                const searchVal = dirSearchInput ? dirSearchInput.value : '';
-                renderDirectory(e.target.value, searchVal);
+
+        if (btnCancelEmp) btnCancelEmp.addEventListener('click', closeModal);
+        if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+
+        if (empForm) {
+            empForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('emp-name').value;
+                const email = document.getElementById('emp-email').value;
+                const position = document.getElementById('emp-position').value;
+                const department = document.getElementById('emp-department').value;
+                const status = document.getElementById('emp-status').value;
+                
+                if (isEditing && editingId) {
+                    const index = mockEmployees.findIndex(emp => emp.id === editingId);
+                    if (index !== -1) {
+                        mockEmployees[index] = { ...mockEmployees[index], name, email, position, department, status };
+                    }
+                } else {
+                    const newId = Math.max(0, ...mockEmployees.map(e => e.id)) + 1;
+                    const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'EMP';
+                    const avatar = `https://placehold.co/100x100/e2e8f0/475569?text=${initials}`;
+                    
+                    mockEmployees.unshift({
+                        id: newId, name, email, position, department, status, avatar
+                    });
+                }
+                
+                closeModal();
+                const filterVal = document.getElementById('directory-filter') ? document.getElementById('directory-filter').value : 'all';
+                const searchVal = document.getElementById('directory-search') ? document.getElementById('directory-search').value : '';
+                renderDirectory(filterVal, searchVal);
+                updateDashboardStats(); // Update counters
             });
         }
-        
-        // Initialize directory silently in background on load
-        setTimeout(() => {
-             if (document.getElementById('directory-table-body')) {
-                 renderDirectory();
-             }
-        }, 500);
+
+        // Attach to window for inline HTML onclick handlers
+        window.editEmployee = (id) => {
+            const emp = mockEmployees.find(e => e.id === id);
+            if (!emp) return;
+            
+            isEditing = true;
+            editingId = id;
+            modalTitle.textContent = 'Edit Employee Profile';
+            
+            document.getElementById('emp-name').value = emp.name;
+            document.getElementById('emp-email').value = emp.email;
+            document.getElementById('emp-position').value = emp.position;
+            document.getElementById('emp-department').value = emp.department;
+            document.getElementById('emp-status').value = emp.status;
+            
+            openModal();
+        };
+
+        window.archiveEmployee = (id) => {
+            const index = mockEmployees.findIndex(emp => emp.id === id);
+            if (index !== -1) {
+                // Change status to Archived
+                mockEmployees[index].status = 'Archived';
+                
+                const filterVal = document.getElementById('directory-filter') ? document.getElementById('directory-filter').value : 'all';
+                const searchVal = document.getElementById('directory-search') ? document.getElementById('directory-search').value : '';
+                renderDirectory(filterVal, searchVal);
+                updateDashboardStats(); // Update active employee counter
+            }
+        };
 
     </script>
 </body>
