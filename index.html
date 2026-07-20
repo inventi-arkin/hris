@@ -97,17 +97,19 @@
                     Sign in with Google
                 </button>
 
-                <div class="relative flex items-center py-4 mb-4">
-                    <div class="flex-grow border-t border-gray-200"></div>
-                    <span class="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold tracking-wider uppercase">or access preview</span>
-                    <div class="flex-grow border-t border-gray-200"></div>
-                </div>
+                <div id="mock-login-section">
+                    <div class="relative flex items-center py-4 mb-4">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="flex-shrink-0 mx-4 text-gray-400 text-xs font-bold tracking-wider uppercase">or access preview</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
+                    </div>
 
-                <button id="btn-mock-login" class="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white font-semibold py-3.5 px-4 rounded-xl transition-all shadow-md hover:-translate-y-0.5">
-                    <i class="fa-solid fa-flask text-primary-400"></i>
-                    Dev Mock Login
-                </button>
-                <p class="mt-6 text-xs text-gray-400 font-medium">Authorized personnel only. (Must use @inventi.ph)</p>
+                    <button id="btn-mock-login" class="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white font-semibold py-3.5 px-4 rounded-xl transition-all shadow-md hover:-translate-y-0.5">
+                        <i class="fa-solid fa-flask text-primary-400"></i>
+                        Dev Mock Login
+                    </button>
+                </div>
+                <p class="mt-6 text-xs text-gray-400 font-medium">Authorized personnel only. For Inventi Use Only.</p>
             </div>
             
             <p class="absolute bottom-6 text-xs text-gray-400 font-medium text-center px-4">
@@ -396,6 +398,20 @@
         const btnLoginGoogle = document.getElementById('btn-login-google');
         const btnMockLogin = document.getElementById('btn-mock-login');
         const btnLogout = document.getElementById('btn-logout');
+        const mockLoginSection = document.getElementById('mock-login-section');
+        
+        // Sandbox Detection for Gemini Canvas
+        let isCanvasSandbox = false;
+        try { 
+            if (window.self !== window.top && window.origin === "null") isCanvasSandbox = true; 
+        } catch (e) { 
+            isCanvasSandbox = true; 
+        }
+
+        // Hide Dev Mock Login if deployed outside of Canvas
+        if (!isCanvasSandbox && mockLoginSection) {
+            mockLoginSection.style.display = 'none';
+        }
         
         // Dashboard Elements
         const welcomeName = document.getElementById('welcome-name');
