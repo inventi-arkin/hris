@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRIS Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Gray-100 */
+        }
+        
+        /* Loading spinner animation */
+        .loader {
+            border-top-color: #0ea5e9;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hide elements by default until state is determined */
+        #dashboard-view, #login-view, #loading-view {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-gray-800 h-screen flex flex-col overflow-hidden">
+
+    <div id="loading-view" class="flex-1 flex flex-col items-center justify-center bg-gray-50 z-50 fixed inset-0">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-16 w-16 mb-4"></div>
+        <h2 class="text-center text-gray-600 text-xl font-semibold">Loading HRIS Portal...</h2>
+        <p class="text-gray-500 mt-2">Checking authentication status</p>
+    </div>
+
+    <div id="login-view" class="flex-1 flex items-center justify-center bg-gray-50 min-h-screen">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-lg border border-gray-100">
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-users text-primary-600 text-3xl"></i>
+                </div>
+                <h2 class="mt-2 text-3xl font-bold text-gray-900">
+                    HRIS Portal
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Sign in to access the Human Resource Information System
+                </p>
+            </div>
+            
+            <div class="mt-8 space-y-6">
+                <!-- Custom Error Message Container -->
+                <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline" id="login-error-text"></span>
+                </div>
+
+                <div>
+                    <button id="google-login-btn" class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                        <img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo">
+                        Sign in with Google
+                    </button>
+                </div>
+                
+                <!-- Mock Login for Canvas Preview -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button id="mock-login-btn" class="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm bg-primary-600 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200">
+                        <i class="fa-solid fa-code mr-2"></i>
+                        Dev Mock Login (@inventi.ph)
+                    </button>
+                    <p class="text-xs text-center text-gray-500 mt-2">Use this to preview the dashboard inside Canvas.</p>
+                </div>
+
+                <!-- Divider for potential future email login -->
+                <div class="relative mt-6 hidden">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">
+                            Enterprise Access Only
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-view" class="flex-1 flex h-screen overflow-hidden bg-gray-100">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col shadow-sm">
+            <div class="h-16 flex items-center px-6 border-b border-gray-200 bg-primary-600">
+                <i class="fa-solid fa-users text-white text-xl mr-3"></i>
+                <span class="text-white text-lg font-bold tracking-wider">NexaHR</span>
+            </div>
+            
+            <div class="overflow-y-auto flex-1 py-4">
+                <nav class="space-y-1 px-3">
+                    <a href="#" id="nav-overview" class="nav-item bg-primary-50 text-primary-700 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md">
+                        <i class="fa-solid fa-chart-pie text-primary-500 mr-3 text-lg w-5 text-center"></i>
+                        Dashboard
+                    </a>
+                    
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">Organization</h3>
+                    
+                    <a href="#" id="nav-directory" class="nav-item text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
+                        <i class="fa-solid fa-address-book text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
+                        Directory
+                    </a>
+                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
+                        <i class="fa-solid fa-sitemap text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
+                        Org Chart
+                    </a>
+                    
+                    <h3 class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">My HR</h3>
+                    
+                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
+                        <i class="fa-solid fa-calendar-check text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
+                        Leave / Time Off
+                    </a>
+                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
+                        <i class="fa-solid fa-money-check-dollar text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
+                        Payroll & Payslips
+                    </a>
+                    <a href="#" class="text-gray-700 hover:bg-gray-50 hover:text-gray-900 group flex items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors">
+                        <i class="fa-solid fa-bullseye text-gray-400 group-hover:text-gray-500 mr-3 text-lg w-5 text-center"></i>
+                        Performance
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- User Profile Snippet in Sidebar -->
+            <div class="border-t border-gray-200 p-4 bg-gray-50">
+                <div class="flex items-center w-full">
+                    <img id="sidebar-user-photo" class="h-9 w-9 rounded-full object-cover border border-gray-300" src="https://placehold.co/100x100/e2e8f0/475569?text=U" alt="User avatar">
+                    <div class="ml-3 truncate flex-1">
+                        <p id="sidebar-user-name" class="text-sm font-medium text-gray-700 truncate">Loading...</p>
+                        <p class="text-xs text-gray-500">Employee</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm z-10">
+                <div class="flex items-center">
+                    <button class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none mr-4">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <h1 id="header-title" class="text-xl font-semibold text-gray-800">Overview</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-gray-500 relative p-1">
+                        <i class="fa-regular fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span>
+                    </button>
+                    
+                    <!-- Profile Dropdown Trigger -->
+                    <div class="relative flex items-center">
+                        <span id="header-user-email" class="hidden sm:block text-sm text-gray-600 mr-3">loading@example.com</span>
+                        <button id="logout-btn" class="ml-2 bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm flex items-center">
+                            <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Sign Out
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50">
+                
+                <!-- OVERVIEW VIEW -->
+                <div id="view-overview" class="block">
+                    <!-- Welcome Banner -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Welcome back, <span id="welcome-name" class="text-primary-600">Employee</span>!</h2>
+                            <p class="text-gray-500 mt-1">Here is a quick summary of your HR dashboard.</p>
+                        </div>
+                        <div class="hidden sm:block">
+                            <div class="text-right">
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Today's Date</p>
+                                <p id="current-date" class="text-lg font-medium text-gray-800"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+                    <!-- Stat Card 1 -->
+                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                                    <i class="fa-solid fa-clock text-blue-600 text-xl w-6 text-center"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Time Logged This Week</dt>
+                                        <dd id="stat-time" class="text-lg font-semibold text-gray-900">--</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">View timesheet</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 2 -->
+                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-green-100 rounded-md p-3">
+                                    <i class="fa-solid fa-calendar-day text-green-600 text-xl w-6 text-center"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Leave Balance</dt>
+                                        <dd id="stat-leave" class="text-lg font-semibold text-gray-900">--</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">Request time off</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Card 3 -->
+                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                                    <i class="fa-solid fa-bullhorn text-yellow-600 text-xl w-6 text-center"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Pending Tasks</dt>
+                                        <dd id="stat-tasks" class="text-lg font-semibold text-gray-900">--</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">View tasks</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 4 -->
+                    <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                                    <i class="fa-solid fa-award text-purple-600 text-xl w-6 text-center"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Next Review</dt>
+                                        <dd id="stat-review" class="text-lg font-semibold text-gray-900">--</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100">
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-primary-600 hover:text-primary-500">Performance goals</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <!-- END OVERVIEW VIEW -->
+
+                <!-- DIRECTORY VIEW -->
+                <div id="view-directory" class="hidden space-y-6">
+                    <!-- Directory Header Controls -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="relative w-full sm:w-96">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" id="directory-search" class="focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border" placeholder="Search employees by name or position...">
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <select id="directory-filter" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md border">
+                                <option value="all">All Departments</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Product">Product</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Directory Table -->
+                    <div class="bg-white shadow-sm rounded-xl border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position & Department</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Info</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="directory-table-body" class="bg-white divide-y divide-gray-200">
+                                    <!-- Content populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END DIRECTORY VIEW -->
+                
+                <!-- Footer -->
+                <footer class="mt-8 border-t border-gray-200 pt-6 pb-2 text-center text-sm text-gray-500">
+                    <p>&copy; 2026 NexaHR Systems. All rights reserved.</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let app;
+        let auth;
+        let db;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'hris-default-app';
+        
+        try {
+            // Using the explicitly provided Firebase config
+            const firebaseConfig = {
+                apiKey: "AIzaSyBhPf0-e_uhkDBreHw--Z73g_A3fyIHOkQ",
+                authDomain: "hris-2c1f2.firebaseapp.com",
+                projectId: "hris-2c1f2",
+                storageBucket: "hris-2c1f2.firebasestorage.app",
+                messagingSenderId: "504479158885",
+                appId: "1:504479158885:web:ef70d0d5781f28b8102c8c"
+            };
+            
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            // Set language to device default for Auth UI
+            auth.useDeviceLanguage();
+            
+            console.log("Firebase & Firestore initialized successfully");
+        } catch (error) {
+            console.error("Firebase initialization failed:", error);
+            showError("System initialization error. Please contact IT support.");
+        }
+
+        // DOM Elements
+        const loadingView = document.getElementById('loading-view');
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+        
+        const loginBtn = document.getElementById('google-login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const errorContainer = document.getElementById('login-error');
+        const errorText = document.getElementById('login-error-text');
+        
+        // User info display elements
+        const headerEmail = document.getElementById('header-user-email');
+        const welcomeName = document.getElementById('welcome-name');
+        const sidebarName = document.getElementById('sidebar-user-name');
+        const sidebarPhoto = document.getElementById('sidebar-user-photo');
+        
+        // Environment Check for Canvas Sandbox
+        const isSandbox = window.location.origin === "null" || window.location.hostname === "" || window.location.hostname.includes('googleusercontent');
+        
+        if (isSandbox) {
+            console.warn("Running in Canvas Sandbox: Ensure googleusercontent.com is added to Firebase Authorized Domains.");
+            // We removed the code that disables the login button so you can test it now
+        }
+
+        // Helper to switch views
+        function showView(viewId) {
+            loadingView.style.display = 'none';
+            loginView.style.display = 'none';
+            dashboardView.style.display = 'none';
+            
+            document.getElementById(viewId).style.display = viewId === 'dashboard-view' ? 'flex' : 'flex';
+        }
+        
+        function showError(message) {
+            errorText.textContent = message;
+            errorContainer.classList.remove('hidden');
+            // Hide error after 10 seconds to give user time to read
+            setTimeout(() => {
+                errorContainer.classList.add('hidden');
+            }, 10000);
+        }
+
+        // Set current date in dashboard
+        const dateElement = document.getElementById('current-date');
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = new Date().toLocaleDateString('en-US', options);
+
+        // Setup Google Auth Provider
+        const googleProvider = new GoogleAuthProvider();
+        
+        // Handle Login Click
+        loginBtn.addEventListener('click', async (e) => {
+            try {
+                // Visual feedback during login
+                loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Connecting...';
+                loginBtn.disabled = true;
+                errorContainer.classList.add('hidden');
+
+                // Intercept request if inside the restricted preview sandbox to prevent console errors
+                if (isSandbox) {
+                    await new Promise(resolve => setTimeout(resolve, 400)); // Small delay for visual effect
+                    throw { code: 'auth/unauthorized-domain' };
+                }
+
+                // Initiate popup sign-in
+                const result = await signInWithPopup(auth, googleProvider);
+                
+                // Check if the user's email belongs to the allowed domain
+                const userEmail = result.user.email;
+                if (!userEmail || !userEmail.endsWith('@inventi.ph')) {
+                    // Sign out the user immediately if domain doesn't match
+                    await signOut(auth);
+                    throw new Error(`Access denied. ${userEmail} is not an @inventi.ph email address.`);
+                }
+                
+                // The onAuthStateChanged listener will handle the UI update if successful
+                
+            } catch (error) {
+                // Only log unexpected errors to the console (suppress sandbox errors)
+                if (error.code !== 'auth/unauthorized-domain') {
+                    console.error("Login error:", error);
+                }
+                
+                loginBtn.innerHTML = '<img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo"> Sign in with Google';
+                loginBtn.disabled = false;
+                
+                // Handle specific errors
+                if (error.code === 'auth/popup-closed-by-user') {
+                    showError("Sign-in cancelled. Please try again.");
+                } else if (error.code === 'auth/network-request-failed') {
+                    showError("Network error. Check your connection.");
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    showError("Firebase security blocks real logins inside this preview window. Please use the 'Dev Mock Login' button below.");
+                } else {
+                    showError(error.message || "Authentication failed. Please try again.");
+                }
+            }
+        });
+
+        // Handle Logout Click
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                // Check if it's a mock session
+                if (window.isMockSession) {
+                    window.isMockSession = false;
+                    showView('login-view');
+                    return;
+                }
+                
+                await signOut(auth);
+                // The onAuthStateChanged listener will handle the UI update
+            } catch (error) {
+                console.error("Logout error:", error);
+                showError("Failed to sign out. Please try again.");
+            }
+        });
+
+        // Handle Mock Login Click for Canvas
+        document.getElementById('mock-login-btn').addEventListener('click', () => {
+            window.isMockSession = true;
+            
+            // Set mock UI data
+            headerEmail.textContent = 'juan.delacruz@inventi.ph';
+            welcomeName.textContent = 'Juan';
+            sidebarName.textContent = 'Juan Dela Cruz (Dev)';
+            sidebarPhoto.src = `https://placehold.co/100x100/e2e8f0/475569?text=JC`;
+            
+            // Inject Mock Stats for Dashboard
+            document.getElementById('stat-time').textContent = '38h 45m';
+            document.getElementById('stat-leave').textContent = '12.5 Days';
+            document.getElementById('stat-tasks').textContent = '5';
+            document.getElementById('stat-review').textContent = 'Aug 15, 2026';
+            
+            // Pre-populate the directory data immediately on login
+            if (typeof renderDirectory === 'function') {
+                renderDirectory();
+            }
+            
+            // Switch to dashboard
+            showView('dashboard-view');
+        });
+
+        // Start by showing loading
+        showView('loading-view');
+
+        onAuthStateChanged(auth, async (user) => {
+            // Note: We bypass the custom token check because we are using a custom Firebase project
+            // and we want to enforce real Google login.
+            
+            if (user) {
+                console.log("User logged in:", user.email);
+                
+                // Sync user profile to Firestore database
+                try {
+                    const userId = user.uid;
+                    // Strict path rule: /artifacts/{appId}/users/{userId}/{collectionName}
+                    const userRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'info');
+                    
+                    await setDoc(userRef, {
+                        email: user.email,
+                        name: user.displayName || 'Employee',
+                        lastLogin: new Date().toISOString(),
+                        photoURL: user.photoURL || '',
+                        status: 'Active'
+                    }, { merge: true });
+                    
+                    console.log("User profile synced with Firestore.");
+                } catch (dbError) {
+                    console.error("Failed to sync profile to Firestore:", dbError);
+                }
+
+                // Update UI with user data
+                headerEmail.textContent = user.email;
+                
+                // Extract first name or use display name
+                const displayName = user.displayName || 'Employee';
+                const firstName = displayName.split(' ')[0];
+                
+                welcomeName.textContent = firstName;
+                sidebarName.textContent = displayName;
+                
+                // Set profile photo with fallback
+                if (user.photoURL) {
+                    sidebarPhoto.src = user.photoURL;
+                } else {
+                    // Generate placeholder with initials
+                    const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    sidebarPhoto.src = `https://placehold.co/100x100/e2e8f0/475569?text=${initials}`;
+                }
+
+                // Smooth transition to dashboard
+                showView('dashboard-view');
+                
+                // Reset login button state in case they log out later
+                loginBtn.innerHTML = '<img class="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo"> Sign in with Google';
+                loginBtn.disabled = false;
+                
+            } else {
+                // Show login screen
+                console.log("User signed out, showing login");
+                showView('login-view');
+            }
+        });
+
+        // --- DASHBOARD NAVIGATION & VIEWS ---
+        const navOverview = document.getElementById('nav-overview');
+        const navDirectory = document.getElementById('nav-directory');
+        const viewOverview = document.getElementById('view-overview');
+        const viewDirectory = document.getElementById('view-directory');
+        const headerTitle = document.getElementById('header-title');
+
+        // Helper to reset nav styles
+        function resetNavStyles() {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                // Remove active classes
+                item.classList.remove('bg-primary-50', 'text-primary-700');
+                item.classList.add('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
+                
+                // Reset icon colors
+                const icon = item.querySelector('i');
+                if(icon) {
+                    icon.classList.remove('text-primary-500');
+                    icon.classList.add('text-gray-400', 'group-hover:text-gray-500');
+                }
+            });
+        }
+
+        // Helper to set active nav style
+        function setActiveNav(navElement) {
+            navElement.classList.remove('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
+            navElement.classList.add('bg-primary-50', 'text-primary-700');
+            
+            const icon = navElement.querySelector('i');
+            if(icon) {
+                icon.classList.remove('text-gray-400', 'group-hover:text-gray-500');
+                icon.classList.add('text-primary-500');
+            }
+        }
+
+        // Switch to Overview Tab
+        navOverview.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetNavStyles();
+            setActiveNav(navOverview);
+            
+            viewDirectory.classList.add('hidden');
+            viewOverview.classList.remove('hidden');
+            headerTitle.textContent = 'Overview';
+        });
+
+        // Switch to Directory Tab
+        navDirectory.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetNavStyles();
+            setActiveNav(navDirectory);
+            
+            viewOverview.classList.add('hidden');
+            viewDirectory.classList.remove('hidden');
+            headerTitle.textContent = 'Employee Directory';
+            
+            // Force re-render of directory list to ensure data displays
+            const filterVal = document.getElementById('directory-filter') ? document.getElementById('directory-filter').value : 'all';
+            const searchVal = document.getElementById('directory-search') ? document.getElementById('directory-search').value : '';
+            renderDirectory(filterVal, searchVal);
+        });
+
+        // --- DIRECTORY MOCK DATA & RENDER LOGIC ---
+        const mockEmployees = [
+            { id: 1, name: 'Sarah Miller', position: 'Product Lead', department: 'Product', email: 'smiller@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0f2fe/0369a1?text=SM' },
+            { id: 2, name: 'John Davis', position: 'UX Designer', department: 'Product', email: 'jdavis@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fef08a/854d0e?text=JD' },
+            { id: 3, name: 'Alex Kim', position: 'Frontend Developer', department: 'Engineering', email: 'akim@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/fecdd3/be123c?text=AK' },
+            { id: 4, name: 'Elena Rodriguez', position: 'HR Manager', department: 'Human Resources', email: 'erodriguez@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dcfce3/166534?text=ER' },
+            { id: 5, name: 'Marcus Johnson', position: 'Backend Engineer', department: 'Engineering', email: 'mjohnson@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/f3e8ff/6b21a8?text=MJ' },
+            { id: 6, name: 'Wei Chen', position: 'Marketing Director', department: 'Marketing', email: 'wchen@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/ffedd5/c2410c?text=WC' },
+            { id: 7, name: 'Maria Santos', position: 'QA Engineer', department: 'Engineering', email: 'msantos@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0e7ff/4338ca?text=MS' },
+            { id: 8, name: 'Miguel Reyes', position: 'Data Analyst', department: 'Engineering', email: 'mreyes@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fae8ff/a21caf?text=MR' },
+            { id: 9, name: 'Isabella Garcia', position: 'Recruitment Specialist', department: 'Human Resources', email: 'igarcia@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/cffafe/0e7490?text=IG' },
+            { id: 10, name: 'David Bautista', position: 'Content Strategist', department: 'Marketing', email: 'dbautista@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fefce8/a16207?text=DB' },
+            { id: 11, name: 'Chloe Lim', position: 'Product Manager', department: 'Product', email: 'clim@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fee2e2/b91c1c?text=CL' },
+            { id: 12, name: 'Rafael Cruz', position: 'DevOps Engineer', department: 'Engineering', email: 'rcruz@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dbeafe/1d4ed8?text=RC' },
+            { id: 13, name: 'Juan Dela Cruz', position: 'Software Engineer', department: 'Engineering', email: 'jdelacruz@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/475569?text=JC' },
+            { id: 14, name: 'Ana Patricia Gonzales', position: 'Financial Controller', department: 'Finance', email: 'agonzales@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fce7f3/be185d?text=AG' },
+            { id: 15, name: 'Mark Villanueva', position: 'Sales Executive', department: 'Sales', email: 'mvillanueva@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/d1fae5/047857?text=MV' },
+            { id: 16, name: 'Grace Torres', position: 'Operations Manager', department: 'Operations', email: 'gtorres@inventi.ph', status: 'On Leave', avatar: 'https://placehold.co/100x100/fef3c7/b45309?text=GT' },
+            { id: 17, name: 'Kevin Ocampo', position: 'Account Manager', department: 'Sales', email: 'kocampo@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e0e7ff/3730a3?text=KO' },
+            { id: 18, name: 'Liza Fernandez', position: 'Payroll Specialist', department: 'Finance', email: 'lfernandez@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fae8ff/86198f?text=LF' },
+            { id: 19, name: 'Paolo Mendoza', position: 'Facilities Coordinator', department: 'Operations', email: 'pmendoza@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/dbeafe/1e40af?text=PM' },
+            { id: 20, name: 'Ria Sy', position: 'UI Designer', department: 'Product', email: 'rsy@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/fefce8/ca8a04?text=RS' },
+            { id: 21, name: 'Antonio Ramos', position: 'Chief Executive Officer', department: 'Operations', email: 'aramos@inventi.ph', status: 'Active', avatar: 'https://placehold.co/100x100/e2e8f0/0f172a?text=AR' }
+        ];
+
+        function renderDirectory(filterDept = 'all', searchQuery = '') {
+            const tbody = document.getElementById('directory-table-body');
+            if (!tbody) return; // Safeguard if element is missing
+            
+            tbody.innerHTML = '';
+            
+            // Filter by department and text search
+            const filtered = mockEmployees.filter(emp => {
+                const matchDept = filterDept === 'all' || emp.department === filterDept;
+                const searchLower = (searchQuery || '').toLowerCase();
+                const matchSearch = emp.name.toLowerCase().includes(searchLower) || 
+                                    emp.position.toLowerCase().includes(searchLower);
+                return matchDept && matchSearch;
+            });
+            
+            // Empty state
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No employees found matching your search criteria.</td></tr>`;
+                return;
+            }
+
+            // Render table rows
+            filtered.forEach(emp => {
+                const statusHtml = emp.status === 'Active' 
+                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><span class="w-1.5 h-1.5 mr-1.5 bg-green-500 rounded-full"></span> Active</span>`
+                    : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"><span class="w-1.5 h-1.5 mr-1.5 bg-yellow-500 rounded-full"></span> ${emp.status}</span>`;
+                
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition-colors';
+                tr.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 flex-shrink-0">
+                                <img class="h-10 w-10 rounded-full object-cover border border-gray-200" src="${emp.avatar}" alt="${emp.name}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${emp.name}</div>
+                                <div class="text-xs text-gray-500">EMP-${String(emp.id).padStart(4, '0')}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${emp.position}</div>
+                        <div class="text-sm text-gray-500">${emp.department}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <a href="mailto:${emp.email}" class="text-sm text-gray-600 hover:text-primary-600 transition-colors flex items-center">
+                            <i class="fa-regular fa-envelope mr-1.5 text-gray-400"></i>
+                            ${emp.email}
+                        </a>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        ${statusHtml}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-gray-400 hover:text-primary-600 transition-colors bg-white rounded-md p-1 border border-transparent hover:border-gray-200 hover:shadow-sm" title="View Details">
+                            <i class="fa-solid fa-chevron-right px-1"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // Setup Search and Filter Event Listeners
+        const dirSearchInput = document.getElementById('directory-search');
+        const dirFilterSelect = document.getElementById('directory-filter');
+        
+        if(dirSearchInput) {
+            dirSearchInput.addEventListener('input', (e) => {
+                const filterVal = dirFilterSelect ? dirFilterSelect.value : 'all';
+                renderDirectory(filterVal, e.target.value);
+            });
+        }
+        if(dirFilterSelect) {
+            dirFilterSelect.addEventListener('change', (e) => {
+                const searchVal = dirSearchInput ? dirSearchInput.value : '';
+                renderDirectory(e.target.value, searchVal);
+            });
+        }
+        
+        // Initialize directory silently in background on load
+        setTimeout(() => {
+             if (document.getElementById('directory-table-body')) {
+                 renderDirectory();
+             }
+        }, 500);
+
+    </script>
+</body>
+</html>
